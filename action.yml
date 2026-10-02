@@ -31,3 +31,7 @@ runs:
         format_arg=""
         if [ -n "${{ inputs.format }}" ]; then format_arg="--format ${{ inputs.format }}"; fi
         python "${{ github.action_path }}/action_runner.py" "${{ inputs.path }}" --contract "${{ inputs.contract }}" $format_arg --report "${{ inputs.report }}" --limit "${{ inputs.max-errors }}"
+
+branding:
+  icon: shield
+  color: blue
