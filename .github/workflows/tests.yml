@@ -1,0 +1,33 @@
+name: tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: python -m pip install -e .
+      - run: python -m unittest discover -s tests -q
+      - run: csv-guard sample/orders.csv --contract sample/orders.schema.json --report json > report.json
+      - run: python -c "import json; r=json.load(open('report.json')); assert r['status'] == 'fail' and r['summary']['errors'] > 0"
+  action:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: ./
+        with:
+          path: sample/orders.jsonl
+          contract: sample/orders.schema.json
+          format: jsonl

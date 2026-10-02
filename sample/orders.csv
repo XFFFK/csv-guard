@@ -1,0 +1,5 @@
+order_id,amount,status,created_at
+O1001,128.50,paid,2026-10-01
+O1002,49.90,pending,2026-10-02
+O1003,0,cancelled,2026-10-03
+O1003,-2,unknown,not-a-date

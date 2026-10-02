@@ -1,0 +1,33 @@
+name: CSV Guard
+
+description: Validate a CSV or JSONL file against a local JSON contract.
+author: XFFFK
+inputs:
+  path:
+    description: Data file relative to the caller repository.
+    required: true
+  contract:
+    description: JSON contract path relative to the caller repository.
+    required: true
+  format:
+    description: Input format (csv or jsonl); inferred from file extension when omitted.
+    required: false
+    default: ""
+  report:
+    description: Report format (text, json, or html).
+    required: false
+    default: text
+  max-errors:
+    description: Maximum violation details to retain.
+    required: false
+    default: "100"
+
+runs:
+  using: composite
+  steps:
+    - name: Validate data contract
+      shell: bash
+      run: |
+        format_arg=""
+        if [ -n "${{ inputs.format }}" ]; then format_arg="--format ${{ inputs.format }}"; fi
+        python "${{ github.action_path }}/action_runner.py" "${{ inputs.path }}" --contract "${{ inputs.contract }}" $format_arg --report "${{ inputs.report }}" --limit "${{ inputs.max-errors }}"
